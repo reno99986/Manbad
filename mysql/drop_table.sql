@@ -1,0 +1,7 @@
+DROP TABLE IF EXISTS `Course_Content`;
+DROP TABLE IF EXISTS `Assessments`;
+DROP TABLE IF EXISTS `Enrollments`;
+DROP TABLE IF EXISTS `Courses`;
+DROP TABLE IF EXISTS `Students`;
+DROP TABLE IF EXISTS `Instructors`;
+DROP TABLE IF EXISTS `Users`;
