@@ -1,8 +1,9 @@
 import express from "express";
 import dotenv from "dotenv";
-import sql2 from "mssql";
+import sql2 from "mysql2";
 dotenv.config();
 const PORT = process.env.PORT;
+const mysql = sql2;
 
 
 

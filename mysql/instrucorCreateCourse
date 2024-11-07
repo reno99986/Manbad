@@ -1,0 +1,12 @@
+CREATE PROCEDURE AddCourse (
+    IN p_instructor_id INT,
+    IN p_course_name VARCHAR(255),
+    IN p_description TEXT,
+    IN p_price DECIMAL(10, 2),
+    IN p_duration INT
+)
+BEGIN
+    -- Insert the new course into the Courses table
+    INSERT INTO Courses (instructor_id, course_name, description, price, duration, createdAt, updatedAt)
+    VALUES (p_instructor_id, p_course_name, p_description, p_price, p_duration, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+END 
