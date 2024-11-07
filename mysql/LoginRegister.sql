@@ -24,12 +24,10 @@ BEGIN
     ROLLBACK;
     SELECT 'Email already registered.' AS Message;
   ELSE
-    -- Hash the password
-    SET @hashed_password = SHA2(p_password, 256);
 
     -- Insert new user
     INSERT INTO Users (name, password, email, phone_number, address, bio, expertise, role)
-    VALUES (p_name, @hashed_password, p_email, p_phone_number, p_address, p_bio, p_expertise, p_role);
+    VALUES (p_name, password, p_email, p_phone_number, p_address, p_bio, p_expertise, p_role);
 
     COMMIT;
     SELECT 'Registration successful.' AS Message;
@@ -67,7 +65,7 @@ BEGIN
     SELECT 'Invalid email or password.' AS Message;
   ELSE
     -- Verify password
-    IF v_stored_password = SHA2(p_password, 256) THEN
+    IF v_stored_password = p_password THEN
       -- Generate session token
       SET v_session_token = UUID();
 

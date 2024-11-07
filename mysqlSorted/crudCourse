@@ -1,0 +1,105 @@
+
+
+CREATE PROCEDURE DeleteCourse(
+    IN p_course_id INT,
+    IN p_instructor_id INT
+)
+BEGIN
+    DECLARE v_role VARCHAR(20);
+    DECLARE v_course_owner INT;
+
+    -- Check if user is an instructor
+    SELECT role INTO v_role FROM Users WHERE user_id = p_instructor_id;
+    
+    IF v_role != 'instructor' THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Only instructors can delete courses';
+    END IF;
+
+    -- Check if the instructor is the owner of the course
+    SELECT instructor_id INTO v_course_owner FROM Courses WHERE course_id = p_course_id;
+    
+    IF v_course_owner != p_instructor_id THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'You are not the owner of this course';
+    END IF;
+
+    -- Delete the course
+    DELETE FROM Courses WHERE course_id = p_course_id;
+
+    SELECT 'Course deleted successfully.' AS Message;
+END
+
+
+
+
+CREATE PROCEDURE UpdateCourse(
+    IN p_course_id INT,
+    IN p_instructor_id INT,
+    IN p_course_name VARCHAR(255),
+    IN p_description TEXT,
+    IN p_duration INT
+)
+BEGIN
+    DECLARE v_role VARCHAR(20);
+    DECLARE v_course_owner INT;
+
+    -- Check if user is an instructor
+    SELECT role INTO v_role FROM Users WHERE user_id = p_instructor_id;
+    
+    IF v_role != 'instructor' THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Only instructors can update courses';
+    END IF;
+
+    -- Check if the instructor is the owner of the course
+    SELECT instructor_id INTO v_course_owner FROM Courses WHERE course_id = p_course_id;
+    
+    IF v_course_owner != p_instructor_id THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'You are not the owner of this course';
+    END IF;
+
+    -- Update the course
+    UPDATE Courses
+    SET course_name = p_course_name, 
+        description = p_description, 
+        duration = p_duration,
+        updatedAt = CURRENT_TIMESTAMP
+    WHERE course_id = p_course_id;
+
+    SELECT 'Course updated successfully.' AS Message;
+END
+
+
+
+DELIMITER //
+
+CREATE PROCEDURE CreateCourse(
+    IN p_instructor_id INT,
+    IN p_course_name VARCHAR(255),
+    IN p_description TEXT,
+    IN p_price DECIMAL(10, 2),
+    IN p_duration INT
+)
+BEGIN
+    DECLARE v_role VARCHAR(20);
+
+    -- Check if the user is an instructor
+    SELECT role INTO v_role FROM Users WHERE user_id = p_instructor_id;
+    
+    IF v_role != 'instructor' THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Only instructors can create courses';
+    END IF;
+
+    -- Insert the new course
+    INSERT INTO Courses (instructor_id, course_name, description, price, duration)
+    VALUES (p_instructor_id, p_course_name, p_description, p_price, p_duration);
+
+    SELECT 'Course created successfully.' AS Message;
+END //
+
+DELIMITER ;
+
+

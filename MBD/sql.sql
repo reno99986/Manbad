@@ -1,0 +1,1 @@
+SELECT CountCourseEnrollments(4) as assalamualaikum;
